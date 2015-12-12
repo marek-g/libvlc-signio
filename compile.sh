@@ -134,7 +134,7 @@ fi
 TESTED_HASH=7740747
 if [ ! -d "vlc" ]; then
     echo "VLC source not found, cloning"
-    git clone git://git.videolan.org/vlc.git vlc
+    git clone -b signio https://github.com/marek-g/vlc-signio.git vlc
     checkfail "vlc source: git clone failed"
 else
     echo "VLC source found"
