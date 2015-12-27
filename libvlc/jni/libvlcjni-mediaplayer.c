@@ -337,6 +337,27 @@ Java_org_videolan_libvlc_MediaPlayer_setCropGeometry(JNIEnv *env, jobject thiz,
       (*env)->ReleaseStringUTFChars(env, cropGeometry, cCropGeometry);
 }
 
+jint
+Java_org_videolan_libvlc_MediaPlayer_takeSnapshot(JNIEnv *env, jobject thiz,
+						  jint videoNum, jstring filePath, jint width, jint height)
+{
+    vlcjni_object *p_obj = VLCJniObject_getInstance(env, thiz);
+
+    if (!p_obj)
+        return -1;
+
+   const char *cFilePath = 0;
+    if (filePath != 0)
+      cFilePath = (*env)->GetStringUTFChars(env, filePath, 0);
+
+    int res = libvlc_video_take_snapshot(p_obj->u.p_mp, (int)videoNum, cFilePath, (int)width, (int)height);
+
+    if (filePath != 0)
+      (*env)->ReleaseStringUTFChars(env, filePath, cFilePath);
+
+    return (jint) res;
+}
+
 void
 Java_org_videolan_libvlc_MediaPlayer_nativeSetVideoTitleDisplay(JNIEnv *env,
                                                                 jobject thiz,
