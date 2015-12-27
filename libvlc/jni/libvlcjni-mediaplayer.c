@@ -202,6 +202,141 @@ Java_org_videolan_libvlc_MediaPlayer_nativeSetMedia(JNIEnv *env,
     libvlc_media_player_set_media(p_obj->u.p_mp, p_m);
 }
 
+jint
+Java_org_videolan_libvlc_MediaPlayer_getWidth(JNIEnv *env, jobject thiz,
+                                               jint videoNumber)
+{
+    vlcjni_object *p_obj = VLCJniObject_getInstance(env, thiz);
+
+    if (!p_obj)
+        return -1;
+
+    unsigned int px, py;
+
+    int res = libvlc_video_get_size(p_obj->u.p_mp, (int) videoNumber, &px, &py);
+    if (res == 0)
+        return (jint) px;
+
+    return (jint) -1;
+}
+
+jint
+Java_org_videolan_libvlc_MediaPlayer_getHeight(JNIEnv *env, jobject thiz,
+                                               jint videoNumber)
+{
+    vlcjni_object *p_obj = VLCJniObject_getInstance(env, thiz);
+
+    if (!p_obj)
+        return -1;
+
+    unsigned int px, py;
+
+    int res = libvlc_video_get_size(p_obj->u.p_mp, (int) videoNumber, &px, &py);
+    if (res == 0)
+        return (jint) py;
+
+    return (jint) -1;
+}
+
+jfloat
+Java_org_videolan_libvlc_MediaPlayer_getScale(JNIEnv *env, jobject thiz)
+{
+    vlcjni_object *p_obj = VLCJniObject_getInstance(env, thiz);
+
+    if (!p_obj)
+        return -1;
+
+    return (jfloat) libvlc_video_get_scale(p_obj->u.p_mp);
+}
+
+void
+Java_org_videolan_libvlc_MediaPlayer_setScale(JNIEnv *env, jobject thiz,
+                                              jfloat scale)
+{
+    vlcjni_object *p_obj = VLCJniObject_getInstance(env, thiz);
+
+    if (!p_obj)
+        return;
+
+    libvlc_video_set_scale(p_obj->u.p_mp, scale);
+}
+
+jstring
+Java_org_videolan_libvlc_MediaPlayer_getAspectRatio(JNIEnv *env, jobject thiz)
+{
+    vlcjni_object *p_obj = VLCJniObject_getInstance(env, thiz);
+
+    if (!p_obj)
+        return 0;
+
+    char *res = libvlc_video_get_aspect_ratio(p_obj->u.p_mp);
+    if (res == 0)
+        return 0;
+
+    jstring jRes = (*env)->NewStringUTF(env, res);
+
+    libvlc_free(res);
+
+    return jRes;
+}
+
+void
+Java_org_videolan_libvlc_MediaPlayer_setAspectRatio(JNIEnv *env, jobject thiz,
+						    jstring ratio)
+{
+    vlcjni_object *p_obj = VLCJniObject_getInstance(env, thiz);
+
+    if (!p_obj)
+        return;
+
+   const char *cRatio = 0;
+    if (ratio != 0)
+      cRatio = (*env)->GetStringUTFChars(env, ratio, 0);
+
+    libvlc_video_set_aspect_ratio(p_obj->u.p_mp, cRatio);
+
+    if (ratio != 0)
+      (*env)->ReleaseStringUTFChars(env, ratio, cRatio);
+}
+
+jstring
+Java_org_videolan_libvlc_MediaPlayer_getCropGeometry(JNIEnv *env, jobject thiz)
+{
+    vlcjni_object *p_obj = VLCJniObject_getInstance(env, thiz);
+
+    if (!p_obj)
+        return 0;
+
+    char *res = libvlc_video_get_crop_geometry(p_obj->u.p_mp);
+    if (res == 0)
+        return 0;
+
+    jstring jRes = (*env)->NewStringUTF(env, res);
+
+    libvlc_free(res);
+
+    return jRes;
+}
+
+void
+Java_org_videolan_libvlc_MediaPlayer_setCropGeometry(JNIEnv *env, jobject thiz,
+						    jstring cropGeometry)
+{
+    vlcjni_object *p_obj = VLCJniObject_getInstance(env, thiz);
+
+    if (!p_obj)
+        return;
+
+    const char *cCropGeometry = 0;
+    if (cropGeometry != 0)
+      cCropGeometry = (*env)->GetStringUTFChars(env, cropGeometry, 0);
+
+    libvlc_video_set_aspect_ratio(p_obj->u.p_mp, cCropGeometry);
+
+    if (cropGeometry != 0)
+      (*env)->ReleaseStringUTFChars(env, cropGeometry, cCropGeometry);
+}
+
 void
 Java_org_videolan_libvlc_MediaPlayer_nativeSetVideoTitleDisplay(JNIEnv *env,
                                                                 jobject thiz,
